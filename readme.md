@@ -56,6 +56,7 @@ You may also supply any of the additional command line options:
   -v, --var SYMBOL             Symbol indicating the fully qualified name of a specific test.
   -i, --include KEYWORD        Run only tests that have this metadata keyword.
   -e, --exclude KEYWORD        Exclude tests with this metadata keyword.
+  -a, --auto                   Watch tests and re-run on changes.
   -H, --test-help              Display this help message
 ```
 
@@ -92,3 +93,7 @@ clj -Atest -e :integration
 ```
 
 If both inclusions and exclusions are present, exclusions take priority over inclusions.
+
+### Using auto-refresh
+
+The option `-a` activate auto-refresh. When active the test process does not exit and re-run the tests on file changes.

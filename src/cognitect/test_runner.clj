@@ -60,7 +60,9 @@
     (dorun (map require nses))
     (try
       (filter-vars! nses (var-filter options))
-      (apply test/run-tests nses)
+      (if (:auto options)
+        (refresh/monitor-project dirs {})
+        (apply test/run-tests nses))
       (finally
         (restore-vars! nses)))))
 
@@ -91,6 +93,7 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
+   ["-a" "--auto" "Watch tests and re-run on changes."]
    ["-H" "--test-help" "Display this help message"]])
 
 (defn- help

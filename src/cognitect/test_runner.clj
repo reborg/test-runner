@@ -3,7 +3,8 @@
             [clojure.java.io :as io]
             [clojure.test :as test]
             [clojure.tools.cli :refer [parse-opts]]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [cognitect.refresh :as refresh])
   (:refer-clojure :exclude [test]))
 
 (defn- ns-filter

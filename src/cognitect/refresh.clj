@@ -132,10 +132,9 @@
 
 (defn run-selected-tests [stack-depth test-paths selectors report namespaces-to-run]
   (let [test-namespaces (namespaces-in-directories test-paths)
-        selected-test-namespaces (nses-selectors-match selectors test-namespaces)
         filtered-test-namespaces (if (seq namespaces-to-run)
-                                   (filter namespaces-to-run selected-test-namespaces)
-                                   selected-test-namespaces)]
+                                   (filter namespaces-to-run test-namespaces)
+                                   test-namespaces)]
     (binding [clojure.test/*stack-trace-depth* stack-depth
               clojure.test/report (select-reporting-fn report)]
       (reset! failed-tests #{})

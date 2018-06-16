@@ -107,7 +107,7 @@ In your deps.edn create the following ":test" alias and, optionally, the ":test-
   {:extra-paths ["test"]
    :extra-deps {com.cognitect/test-runner
                 {:git/url "https://github.com/reborg/test-runner"
-                 :sha "08689a5aa30826915a1639b8b504de7d2d159050"}}
+                 :sha "6edac4045c0c5d5ceb1c7d44932fc39033dee2e8"}}
                  :main-opts ["-m" "cognitect.test-runner" "-a"]}}
  :test-refresh {:changes-only true
                 :watch-dirs ["src" "test"]

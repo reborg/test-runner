@@ -1,13 +1,18 @@
+;; This namespace is a copy of
+;; https://github.com/jakemcc/lein-test-refresh/src/com/jakemccrary/test_refresh.clj
+;; with minor integration changes. All credits to Jake McRary.
 (ns cognitect.refresh
-  (:require clojure.java.shell
-            clojure.pprint
-            [clojure.string :as str]
-            clojure.test
-            clojure.tools.namespace.dir
-            clojure.tools.namespace.find
-            clojure.tools.namespace.reload
-            clojure.tools.namespace.repl
-            clojure.tools.namespace.track)
+  (:require
+    [clojure.edn :as edn]
+    clojure.java.shell
+    clojure.pprint
+    [clojure.string :as str]
+    clojure.test
+    clojure.tools.namespace.dir
+    clojure.tools.namespace.find
+    clojure.tools.namespace.reload
+    clojure.tools.namespace.repl
+    clojure.tools.namespace.track)
   (:import java.text.SimpleDateFormat))
 
 (defn- make-change-tracker []
@@ -205,8 +210,17 @@
   (not (and (not notify-on-success)
             (passed? result))))
 
-(defn monitor-project [test-paths options]
-  (let [users-notifier (create-user-notifier (:notify-command options))
+(defn- load-options []
+  (let [to-map #(edn/read-string (slurp %))
+        local-deps (to-map (str (System/getProperty "user.dir") "/deps.edn"))
+        user-deps (to-map (str (System/getProperty "user.home") "/.clojure/deps.edn"))]
+    (merge
+      (get user-deps :test-refresh {})
+      (get local-deps :test-refresh {}))))
+
+(defn monitor-project []
+  (let [options (load-options)
+        users-notifier (create-user-notifier (:notify-command options))
         should-notify? (partial should-notify? (:notify-on-success options))
         keystroke-pressed (atom nil)
         selectors (second (:nses-and-selectors options))
@@ -246,10 +260,10 @@
                   changed-namespaces (if (:changes-only options)
                                        (set (:clojure.tools.namespace.track/load new-tracker))
                                        #{})
-                  result (run-tests stack-depth test-paths selectors report changed-namespaces)
+                  result (run-tests stack-depth #{"test"} selectors report changed-namespaces)
                   ;; tests need to be run once a failed test is resolved
                   result (if (and was-failed (passed? result))
-                           (run-tests stack-depth test-paths selectors report)
+                           (run-tests stack-depth #{"test"} selectors report)
                            result)]
               (print-to-console result)
               (reset! run-once-exit-code (if (passed? result) 0 1))

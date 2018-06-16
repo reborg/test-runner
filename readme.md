@@ -96,4 +96,22 @@ If both inclusions and exclusions are present, exclusions take priority over inc
 
 ### Using auto-refresh
 
-The option `-a` activate auto-refresh. When active the test process does not exit and re-run the tests on file changes.
+The option `-a` activates `test-refresh`, the same feature provided by the [lein test refresh](https://github.com/jakemcc/lein-test-refresh/) (all credits to Jake McRary). When active, it watches files for changes and re-run tests.
+
+#### How to use
+
+In your deps.edn create the following ":test" alias and, optionally, the ":test-refresh" configuration (the same `lein-test-refesh` options are supported):
+
+```clojure
+{:aliases {:test
+  {:extra-paths ["test"]
+   :extra-deps {com.cognitect/test-runner
+                {:git/url "https://github.com/reborg/test-runner"
+                 :sha "08689a5aa30826915a1639b8b504de7d2d159050"}}
+                 :main-opts ["-m" "cognitect.test-runner" "-a"]}}
+ :test-refresh {:changes-only true
+                :watch-dirs ["src" "test"]
+                :refresh-dirs ["src" "test"]}}
+```
+
+At the command line, type: `clj -Atest` to start.

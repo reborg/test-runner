@@ -62,7 +62,7 @@
     (try
       (filter-vars! nses (var-filter options))
       (if (:auto options)
-        (refresh/monitor-project dirs {})
+        (refresh/monitor-project)
         (apply test/run-tests nses))
       (finally
         (restore-vars! nses)))))
